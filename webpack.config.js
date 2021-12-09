@@ -1,42 +1,51 @@
 const environment = process.env.NODE_ENV;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Glob = require('glob');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const glob = require('glob');
 
 const tsPages = `${srcPath}/assets/scripts/pages/`;
-const pathList = Glob.sync('**/*.ts', {
-    ignore: '**/_*.ts',
-    cwd: tsPages,
-}).map((key) => {
-    // return [path.basename(key, '.ts'), `${tsPages}/${key}`];
-    let dir;
-    let tsPath;
-    if(path.dirname(key) === '.') {
-        dir = 'index';
-        tsPath = key;
-    } else {
-        dir = path.dirname(key) + '/' + path.basename(key, '.ts');
-        tsPath = path.dirname(key) + '/' + path.basename(key);
-    }
-    console.log([dir, tsPages + tsPath]);
-    return [dir, tsPages + tsPath];
-});
+const pathList = glob
+    .sync('**/*.ts', {
+        ignore: '**/_*.ts',
+        cwd: tsPages,
+    })
+    .map((key) => {
+        // return [path.basename(key, '.ts'), `${tsPages}/${key}`];
+        let dir;
+        let tsPath;
+        if (path.dirname(key) === '.') {
+            dir = 'index';
+            tsPath = key;
+        } else {
+            dir = path.dirname(key) + '/' + path.basename(key, '.ts');
+            tsPath = path.dirname(key) + '/' + path.basename(key);
+        }
+        return [dir, tsPages + tsPath];
+    });
 const entries = Object.fromEntries(pathList);
 
-const htmlList = Glob.sync('**/*.html', {
-    cwd: path.resolve(__dirname, './src/pages/'),
-}).map((key) => {
-    if(path.dirname(key) === '.') {
-        dir = 'index';
-    } else {
-        dir = path.dirname(key);
-    }
-    return [dir, key];
-});
+const htmlList = glob
+    .sync('**/*.html', {
+        cwd: path.resolve(__dirname, './src/pages/'),
+    })
+    .map((key) => {
+        let dir;
+        if (path.dirname(key) === '.') {
+            dir = 'index';
+        } else {
+            dir = path.dirname(key) + '/' + path.basename(key, '.html');
+        }
+        return [dir, key];
+    });
 
 const generateHtml = () =>
     htmlList
@@ -48,19 +57,16 @@ const generateHtml = () =>
                     scriptLoading: 'defer',
                     template: path.resolve(__dirname, `./src/pages/${item[1]}`),
                     filename: item[1],
-                    chunks: [item[0], 'common'],
+                    chunks: [item[0]],
                     minify: false,
                 })
         );
 
 const config = {
     context: path.resolve(__dirname, 'src/assets'),
-    // モード値を production に設定すると最適化された状態で、
-    // development に設定するとソースマップ有効でJSファイルが出力される
+
     mode: environment,
 
-    // メインとなるJavaScriptファイル（エントリーポイント）
-    // entry: './src/assets/scripts/main.ts',
     entry: entries,
     output: {
         filename: 'assets/scripts/[name].js?[chunkhash]',
