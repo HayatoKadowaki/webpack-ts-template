@@ -1,0 +1,18 @@
+$layer: (
+    modal: 100,
+    drawer: 40,
+    sp-menu: 35,
+    floating: 30,
+    header: 20,
+    default: 1,
+);
+
+$breakpoints: (
+	'sm': 640px,
+	'md': 768px,
+	'lg': 1024px,
+	'xl': 1280px,
+) !default;
+
+$design-size-pc: 1600;
+$design-size-sp: 750;

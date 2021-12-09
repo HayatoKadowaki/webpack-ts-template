@@ -1,0 +1,7 @@
+@use '../../global' as g;
+a {
+    color: red;
+    @include g.hover {
+        transform: translate(100px);
+    }
+}

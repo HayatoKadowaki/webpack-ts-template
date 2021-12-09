@@ -1,0 +1,38 @@
+@use '../global' as g;
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: map-get(g.$default-font, family);
+    color: map-get(g.$default-font, color);
+    font-size: 1.6em;
+    font-weight: map-get(g.$default-font, weight);
+    overflow-x: hidden;
+}
+
+main {
+    display: block;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    appearance: none;
+}
+
+.sp-only {
+    display: none;
+    @include g.mq(md) {
+        display: block;
+    }
+}
+
+@include g.mq(md) {
+    .pc-only {
+        display: none;
+    }
+}

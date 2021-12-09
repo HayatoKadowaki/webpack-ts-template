@@ -1,0 +1,8 @@
+@use '../global' as global;
+
+:root {
+    --base-size: #{global.$design-size-pc};
+    @include global.mq(md) {
+        --base-size: #{global.$design-size-sp};
+    }
+}
